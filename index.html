@@ -6,57 +6,113 @@
     <title>Test Poziomu Angielskiego - Mobtel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .hidden { display: none; }
+        .hidden { display: none !important; }
+        
+        /* Tło z Londynem (Big Ben, Czerwony autobus) */
+        .bg-london {
+            background-image: linear-gradient(rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.85)), url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Styl "Glassmorphism" dla głównego panelu */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 6px solid #C8102E; /* Czerwony z flagi UK */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Ozdobny pasek w kolorach flagi UK */
+        .uk-strip {
+            height: 8px;
+            background: linear-gradient(to right, #012169 33.3%, #ffffff 33.3%, #ffffff 66.6%, #C8102E 66.6%);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        /* Animacja dla przycisków */
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans text-gray-800">
-    <div class="max-w-3xl mx-auto pt-10 px-4">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-blue-600 mb-2">Test Poziomu Języka Angielskiego</h1>
-            <p class="text-gray-500">Certyfikowany przez firmę <strong>Mobtel</strong></p>
-        </header>
+<body class="bg-london min-h-screen font-sans text-gray-800 flex flex-col items-center pt-10 pb-20 px-4">
 
-        <main class="bg-white rounded-lg shadow-lg p-8">
-            <!-- Start Screen -->
-            <div id="start-screen" class="text-center">
-                <p class="text-lg mb-6">Rozwiąż test, aby sprawdzić swój poziom języka angielskiego i zdobądź oficjalny certyfikat firmy Mobtel.</p>
-                <button id="start-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">Rozpocznij Test</button>
+    <!-- Nagłówek z motywami brytyjskimi -->
+    <header class="text-center mb-10 max-w-3xl w-full">
+        <div class="flex justify-center items-center gap-4 mb-4 text-6xl">
+            <span>🇬🇧</span>
+            <span>💂‍♂️</span>
+            <span>🚌</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-xl tracking-wide">
+            Test Poziomu Języka Angielskiego
+        </h1>
+        <p class="text-xl text-gray-200 drop-shadow-md">Oficjalny certyfikat gwarantowany przez firmę <span class="bg-white text-red-600 font-black px-3 py-1 rounded shadow-lg ml-1">MOBTEL</span></p>
+    </header>
+
+    <main class="glass-panel rounded-xl w-full max-w-3xl p-8 relative overflow-hidden">
+        <div class="uk-strip"></div>
+        
+        <!-- Ekran startowy -->
+        <div id="start-screen" class="text-center py-8">
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">Sprawdź swoje umiejętności!</h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-xl mx-auto leading-relaxed">
+                Test składa się z 10 losowo wybranych pytań (z puli ponad 100). Za każdym razem zestaw pytań jest unikalny. Po zakończeniu otrzymasz oficjalny, imienny certyfikat.
+            </p>
+            <button id="start-btn" class="bg-red-600 hover:bg-red-700 text-white text-xl font-bold py-4 px-10 rounded-full transition duration-300 btn-hover-effect flex items-center justify-center mx-auto gap-3">
+                <span>Start the Quiz</span> 🇬🇧
+            </button>
+        </div>
+
+        <!-- Ekran Quizu -->
+        <div id="quiz-screen" class="hidden py-4">
+            <div class="mb-6 flex justify-between items-center bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <span id="question-counter" class="font-bold text-blue-800 text-lg">Pytanie 1 / 10</span>
+                <span class="text-gray-500 text-sm flex items-center gap-2">🚌 Mobtel Education</span>
+            </div>
+            
+            <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center leading-snug min-h-[80px] flex items-center justify-center">
+                Question goes here?
+            </h2>
+            
+            <div id="answers-container" class="grid gap-4 md:grid-cols-2">
+                <!-- Odpowiedzi wstrzykiwane przez JS -->
+            </div>
+        </div>
+
+        <!-- Ekran Wyników -->
+        <div id="result-screen" class="hidden text-center py-6">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-4xl font-extrabold text-blue-900 mb-2">Twój Wynik</h2>
+            <p class="text-2xl text-gray-600 mb-6">Zdobyte punkty: <span id="score-text" class="font-black text-red-600 text-3xl"></span><span class="text-xl"> / 10</span></p>
+            
+            <div class="bg-gray-50 rounded-xl p-6 mb-8 border-2 border-dashed border-gray-300">
+                <p class="text-lg text-gray-500 mb-2 uppercase tracking-wider font-bold">Oszacowany Poziom CEFR</p>
+                <p id="level-text" class="text-4xl font-black text-blue-700"></p>
+            </div>
+            
+            <div class="max-w-md mx-auto bg-blue-50 p-6 rounded-xl border border-blue-100 mb-8 shadow-inner">
+                <label for="user-name" class="block text-gray-800 font-bold mb-3 text-lg">Wpisz swoje imię i nazwisko na certyfikat:</label>
+                <input type="text" id="user-name" class="border-2 border-blue-200 rounded-lg px-4 py-3 w-full text-lg focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all text-center font-semibold" placeholder="np. Jan Kowalski">
             </div>
 
-            <!-- Quiz Screen -->
-            <div id="quiz-screen" class="hidden">
-                <div class="mb-4 flex justify-between text-sm text-gray-500">
-                    <span id="question-counter">Pytanie 1 z 10</span>
-                </div>
-                <h2 id="question-text" class="text-2xl font-semibold mb-6">Question goes here?</h2>
-                <div id="answers-container" class="space-y-3">
-                    <!-- Answers injected via JS -->
-                </div>
-            </div>
-
-            <!-- Result Screen -->
-            <div id="result-screen" class="hidden text-center">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Twój Wynik</h2>
-                <p class="text-xl mb-2">Udało Ci się zdobyć: <span id="score-text" class="font-bold text-blue-600"></span>/10 punktów</p>
-                <p class="text-2xl mb-6">Twój poziom języka angielskiego to: <strong id="level-text" class="text-green-500 text-3xl block mt-2"></strong></p>
-                
-                <div class="mb-8">
-                    <label for="user-name" class="block text-sm font-medium text-gray-700 mb-2">Wpisz swoje imię i nazwisko na certyfikat:</label>
-                    <input type="text" id="user-name" class="border border-gray-300 rounded-md px-4 py-2 w-full max-w-sm mx-auto focus:ring-blue-500 focus:border-blue-500" placeholder="Jan Kowalski">
-                </div>
-
-                <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center mx-auto">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Pobierz Certyfikat Mobtel
-                </button>
-                
-                <canvas id="cert-canvas" width="800" height="600" class="hidden"></canvas>
-            </div>
-        </main>
-    </div>
+            <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-4 px-8 rounded-full transition duration-300 btn-hover-effect flex items-center justify-center mx-auto shadow-lg">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Pobierz Certyfikat Mobtel
+            </button>
+            
+            <!-- Ukryty Canvas do generowania obrazka -->
+            <canvas id="cert-canvas" width="1000" height="700" class="hidden"></canvas>
+        </div>
+    </main>
 
     <script>
-        const questions = [
+        // Gigantyczna pula 100 pytań (A1 - C2), żeby uniemożliwić naukę testu na pamięć
+        const questionPool = [
             { q: "I ___ from Poland.", a: ["am", "is", "are", "be"], correct: 0 },
             { q: "She ___ to the gym every day.", a: ["go", "goes", "going", "gone"], correct: 1 },
             { q: "Yesterday, I ___ a great movie.", a: ["see", "saw", "seen", "seeing"], correct: 1 },
@@ -66,9 +122,100 @@
             { q: "Despite ___ tired, he kept working.", a: ["be", "being", "to be", "of being"], correct: 1 },
             { q: "Scarcely ___ the room when the phone rang.", a: ["had I entered", "I had entered", "entered I", "I entered"], correct: 0 },
             { q: "It's high time you ___ looking for a job.", a: ["start", "started", "starting", "to start"], correct: 1 },
-            { q: "The company's profits have been ___ this quarter.", a: ["soaring", "plummeting", "fluctuating", "all of the above"], correct: 3 }
+            { q: "The company's profits have been ___ this quarter.", a: ["soaring", "plummeting", "fluctuating", "all of the above"], correct: 3 },
+            { q: "Where ___ you going when I saw you yesterday?", a: ["was", "were", "are", "did"], correct: 1 },
+            { q: "I'm looking forward to ___ you.", a: ["see", "seeing", "seen", "saw"], correct: 1 },
+            { q: "He is used to ___ up early.", a: ["wake", "woke", "waking", "waken"], correct: 2 },
+            { q: "I'd rather you ___ do that.", a: ["don't", "didn't", "won't", "hasn't"], correct: 1 },
+            { q: "Not only ___ late, but he also forgot his books.", a: ["was he", "he was", "he is", "is he"], correct: 0 },
+            { q: "We've run ___ milk, could you buy some?", a: ["out of", "away", "down", "over"], correct: 0 },
+            { q: "The project ___ by next Friday.", a: ["will complete", "completes", "will be completed", "is completing"], correct: 2 },
+            { q: "If he had known, he ___ come.", a: ["would", "will", "would have", "had"], correct: 2 },
+            { q: "He was accused ___ stealing the car.", a: ["for", "of", "about", "with"], correct: 1 },
+            { q: "This time tomorrow, I ___ on the beach.", a: ["will lie", "will be lying", "lie", "am lying"], correct: 1 },
+            { q: "He ___ have forgotten about our meeting. He is usually very punctual.", a: ["must", "can't", "should", "ought to"], correct: 1 },
+            { q: "She has her car ___ every six months.", a: ["service", "serviced", "servicing", "to service"], correct: 1 },
+            { q: "I wish I ___ that expensive car.", a: ["didn't buy", "hadn't bought", "haven't bought", "don't buy"], correct: 1 },
+            { q: "Hardly ever ___ to the cinema nowadays.", a: ["I go", "do I go", "am I going", "I do go"], correct: 1 },
+            { q: "Let's go for a walk, ___?", a: ["will we", "don't we", "shall we", "are we"], correct: 2 },
+            { q: "___ apple a day keeps the doctor away.", a: ["A", "An", "The", "-"], correct: 1 },
+            { q: "My brother is taller ___ me.", a: ["then", "than", "that", "as"], correct: 1 },
+            { q: "I ___ like tea, but now I drink it every morning.", a: ["didn't used to", "used to", "didn't use to", "wasn't using to"], correct: 2 },
+            { q: "There are very ___ people who can speak 5 languages.", a: ["little", "much", "few", "a lot"], correct: 2 },
+            { q: "She told me she ___ the movie before.", a: ["has seen", "saw", "was seeing", "had seen"], correct: 3 },
+            { q: "You ___ better see a doctor about that cough.", a: ["had", "would", "should", "could"], correct: 0 },
+            { q: "The thief got ___ with the money.", a: ["away", "out", "over", "through"], correct: 0 },
+            { q: "Under no circumstances ___ open this door.", a: ["you should", "should you", "you must", "mustn't you"], correct: 1 },
+            { q: "I object ___ treated like a child.", a: ["to be", "being", "to being", "be"], correct: 2 },
+            { q: "It's no use ___ over spilt milk.", a: ["cry", "crying", "to cry", "cried"], correct: 1 },
+            { q: "He succeeded ___ passing the exam.", a: ["on", "at", "in", "with"], correct: 2 },
+            { q: "We ___ have left earlier; we are going to be late.", a: ["must", "should", "can", "might"], correct: 1 },
+            { q: "No sooner ___ the house than it started raining.", a: ["did I leave", "had I left", "I had left", "I left"], correct: 1 },
+            { q: "The book ___ by a famous author.", a: ["wrote", "was written", "has written", "is writing"], correct: 1 },
+            { q: "She makes me ___ so angry!", a: ["feel", "to feel", "feeling", "felt"], correct: 0 },
+            { q: "If only I ___ more time for my hobbies.", a: ["have", "had", "would have", "having"], correct: 1 },
+            { q: "They ___ each other since they were children.", a: ["know", "knew", "have known", "are knowing"], correct: 2 },
+            { q: "Do you mind ___ the window?", a: ["to open", "open", "opening", "opened"], correct: 2 },
+            { q: "I will call you as soon as I ___ home.", a: ["will arrive", "arrive", "arrived", "am arriving"], correct: 1 },
+            { q: "He suggested ___ for a walk.", a: ["go", "to go", "going", "goes"], correct: 2 },
+            { q: "I can't afford ___ a new car this year.", a: ["buying", "to buy", "buy", "bought"], correct: 1 },
+            { q: "He is good ___ playing tennis.", a: ["in", "at", "with", "for"], correct: 1 },
+            { q: "She depends ___ her parents for financial support.", a: ["on", "in", "of", "from"], correct: 0 },
+            { q: "Are you interested ___ history?", a: ["in", "on", "about", "with"], correct: 0 },
+            { q: "We apologized ___ being late.", a: ["for", "about", "of", "with"], correct: 0 },
+            { q: "The meeting was called ___ because of the rain.", a: ["out", "off", "up", "down"], correct: 1 },
+            { q: "She came ___ some old photos while cleaning.", a: ["across", "up", "into", "down"], correct: 0 },
+            { q: "I can't put up ___ this noise anymore!", a: ["with", "to", "for", "in"], correct: 0 },
+            { q: "He turned ___ the job offer because the pay was too low.", a: ["off", "out", "down", "away"], correct: 2 },
+            { q: "They broke ___ their engagement last week.", a: ["up", "off", "out", "down"], correct: 1 },
+            { q: "The plane took ___ on time.", a: ["up", "off", "out", "away"], correct: 1 },
+            { q: "I am totally exhausted. I am completely ___ out.", a: ["worn", "tired", "run", "gone"], correct: 0 },
+            { q: "You should cut ___ on sugar to lose weight.", a: ["down", "off", "out", "away"], correct: 0 },
+            { q: "He takes ___ his father; they look exactly the same.", a: ["after", "like", "to", "for"], correct: 0 },
+            { q: "Can you figure ___ how to solve this puzzle?", a: ["out", "in", "up", "down"], correct: 0 },
+            { q: "I've never been to London ___.", a: ["already", "yet", "still", "just"], correct: 1 },
+            { q: "We have lived here ___ 2010.", a: ["since", "for", "in", "from"], correct: 0 },
+            { q: "I ___ my homework when the lights went out.", a: ["did", "was doing", "have done", "had done"], correct: 1 },
+            { q: "They ___ left by the time we arrived.", a: ["have", "had", "were", "did"], correct: 1 },
+            { q: "If it rains tomorrow, we ___ stay at home.", a: ["would", "will", "are", "do"], correct: 1 },
+            { q: "If I ___ a millionaire, I would travel the world.", a: ["am", "was", "were", "be"], correct: 2 },
+            { q: "If he had studied harder, he ___ the exam.", a: ["would pass", "will pass", "would have passed", "passed"], correct: 2 },
+            { q: "I wish it ___ stop raining.", a: ["will", "would", "does", "is"], correct: 1 },
+            { q: "It's time we ___.", a: ["leave", "left", "are leaving", "will leave"], correct: 1 },
+            { q: "He acts as if he ___ the boss.", a: ["is", "was", "were", "be"], correct: 2 },
+            { q: "I am not used to ___ up so early.", a: ["get", "getting", "got", "be getting"], correct: 1 },
+            { q: "She is looking forward to ___ her friend.", a: ["meet", "meeting", "met", "be meeting"], correct: 1 },
+            { q: "I remember ___ him at the party last year.", a: ["see", "seeing", "to see", "saw"], correct: 1 },
+            { q: "Please don't forget ___ the door when you leave.", a: ["lock", "locking", "to lock", "locked"], correct: 2 },
+            { q: "He stopped ___ a cigarette on his way home.", a: ["smoke", "smoking", "to smoke", "smoked"], correct: 2 },
+            { q: "She tried ___ the heavy box, but couldn't.", a: ["lift", "lifting", "to lift", "lifted"], correct: 2 },
+            { q: "I regret ___ you that your application was rejected.", a: ["inform", "informing", "to inform", "informed"], correct: 2 },
+            { q: "He went on ___ about his problems for an hour.", a: ["talk", "talking", "to talk", "talked"], correct: 1 },
+            { q: "I'd prefer ___ at home tonight.", a: ["stay", "staying", "to stay", "stayed"], correct: 2 },
+            { q: "You had better ___ now.", a: ["leave", "leaving", "to leave", "left"], correct: 0 },
+            { q: "It is essential that she ___ there on time.", a: ["is", "be", "will be", "was"], correct: 1 },
+            { q: "___ he arrived, the meeting had already started.", a: ["By the time", "Until", "As soon as", "While"], correct: 0 },
+            { q: "I will wait here until you ___ back.", a: ["will come", "come", "came", "are coming"], correct: 1 },
+            { q: "In spite of ___ ill, he came to work.", a: ["be", "being", "to be", "was"], correct: 1 },
+            { q: "Although he is rich, he ___ not happy.", a: ["is", "does", "has", "was"], correct: 0 },
+            { q: "He is so tired ___ he cannot walk.", a: ["that", "as", "than", "so"], correct: 0 },
+            { q: "It was such a cold day ___ we stayed inside.", a: ["that", "as", "than", "so"], correct: 0 },
+            { q: "He spoke quietly so that nobody ___ hear him.", a: ["can", "could", "will", "may"], correct: 1 },
+            { q: "To ___ does this book belong?", a: ["who", "whom", "whose", "which"], correct: 1 },
+            { q: "The house ___ roof is green belongs to my uncle.", a: ["which", "that", "whose", "whom"], correct: 2 },
+            { q: "He is the man ___ I met yesterday.", a: ["who", "whom", "whose", "which"], correct: 1 },
+            { q: "I don't know ___ he lives.", a: ["where", "what", "which", "how"], correct: 0 },
+            { q: "She asked me what my name ___.", a: ["is", "was", "has been", "had been"], correct: 1 },
+            { q: "He said that he ___ come the next day.", a: ["will", "would", "can", "may"], correct: 1 },
+            { q: "They wanted to know if I ___ help them.", a: ["can", "could", "will", "shall"], correct: 1 },
+            { q: "She told me ___ worry.", a: ["not", "don't", "not to", "didn't"], correct: 2 },
+            { q: "I asked him where he ___ the day before.", a: ["was", "had been", "has been", "is"], correct: 1 },
+            { q: "He denied ___ the money.", a: ["steal", "stealing", "to steal", "stolen"], correct: 1 },
+            { q: "She admitted ___ a mistake.", a: ["make", "making", "to make", "made"], correct: 1 },
+            { q: "He insisted ___ paying the bill.", a: ["on", "in", "to", "for"], correct: 0 }
         ];
 
+        let selectedQuestions = [];
         let currentQuestion = 0;
         let score = 0;
 
@@ -86,34 +233,74 @@
         const canvas = document.getElementById('cert-canvas');
         const ctx = canvas.getContext('2d');
 
+        // Funkcja tasująca tablicę (algorytm Fisher-Yates) - gwarantuje losowość pytań i odpowiedzi
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
         startBtn.addEventListener('click', () => {
+            // Losowanie 10 unikalnych pytań z puli 100 pytań
+            const shuffledPool = shuffle([...questionPool]);
+            selectedQuestions = shuffledPool.slice(0, 10);
+            
+            // Zerowanie stanu przed nowym testem
+            currentQuestion = 0;
+            score = 0;
+            
             startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
+            
             loadQuestion();
         });
 
         function loadQuestion() {
-            const q = questions[currentQuestion];
-            questionCounter.textContent = `Pytanie ${currentQuestion + 1} z ${questions.length}`;
+            const q = selectedQuestions[currentQuestion];
+            questionCounter.textContent = `Pytanie ${currentQuestion + 1} z ${selectedQuestions.length}`;
             questionText.textContent = q.q;
             answersContainer.innerHTML = '';
             
-            q.a.forEach((ans, index) => {
+            // Przygotowanie odpowiedzi z przypisanymi oryginalnymi indeksami (żeby sprawdzić poprawność po przetasowaniu)
+            let answersWithIndices = q.a.map((answerText, originalIndex) => ({
+                text: answerText,
+                isCorrect: originalIndex === q.correct
+            }));
+            
+            // Tasowanie kolejności odpowiedzi
+            answersWithIndices = shuffle(answersWithIndices);
+            
+            answersWithIndices.forEach((ansObj) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-gray-50 hover:bg-blue-100 border border-gray-200 rounded-lg py-3 px-5 transition duration-200";
-                btn.textContent = ans;
-                btn.onclick = () => selectAnswer(index);
+                btn.className = "w-full text-left bg-white hover:bg-red-50 hover:border-red-300 border-2 border-gray-200 rounded-xl py-4 px-6 transition-all duration-200 text-lg font-medium shadow-sm flex items-center group";
+                
+                // Kółko przed odpowiedzią
+                const circle = document.createElement('span');
+                circle.className = "inline-block w-5 h-5 rounded-full border-2 border-gray-300 mr-4 group-hover:border-red-500 group-hover:bg-red-100 transition-colors";
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = ansObj.text;
+
+                btn.appendChild(circle);
+                btn.appendChild(textSpan);
+                
+                btn.onclick = () => selectAnswer(ansObj.isCorrect);
                 answersContainer.appendChild(btn);
             });
         }
 
-        function selectAnswer(index) {
-            if (index === questions[currentQuestion].correct) {
+        function selectAnswer(isCorrect) {
+            if (isCorrect) {
                 score++;
             }
             currentQuestion++;
             
-            if (currentQuestion < questions.length) {
+            if (currentQuestion < selectedQuestions.length) {
                 loadQuestion();
             } else {
                 showResults();
@@ -124,7 +311,7 @@
             if (s <= 2) return "A1 (Początkujący)";
             if (s <= 4) return "A2 (Podstawowy)";
             if (s <= 6) return "B1 (Średniozaawansowany)";
-            if (s <= 8) return "B2 (Ponad średniozaawansowany)";
+            if (s <= 8) return "B2 (Wyższy Średniozaawansowany)";
             if (s === 9) return "C1 (Zaawansowany)";
             return "C2 (Biegły)";
         }
@@ -136,60 +323,89 @@
             levelText.textContent = getLevel(score);
         }
 
+        // Generowanie certyfikatu (Canvas)
         downloadBtn.addEventListener('click', () => {
-            const name = userNameInput.value.trim() || "Uczestnik Testu";
+            const name = userNameInput.value.trim() || "Wzorowy Uczeń";
             const level = getLevel(score);
             const date = new Date().toLocaleDateString('pl-PL');
             
-            ctx.fillStyle = "#ffffff";
+            // Tło certyfikatu
+            ctx.fillStyle = "#f9fafb"; // jasny szary
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.strokeStyle = "#1d4ed8";
-            ctx.lineWidth = 15;
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+            // Ramka zewnętrzna (czerwona - UK vibe)
+            ctx.strokeStyle = "#C8102E";
+            ctx.lineWidth = 20;
+            ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
             
-            ctx.strokeStyle = "#93c5fd";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+            // Ramka wewnętrzna (granatowa - UK vibe)
+            ctx.strokeStyle = "#012169";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
 
+            // Wzorek/Pasek na dole
+            ctx.fillStyle = "#012169";
+            ctx.fillRect(40, canvas.height - 80, canvas.width - 80, 15);
+            
+            // Nagłówek certyfikatu
             ctx.textAlign = "center";
+            ctx.fillStyle = "#012169";
+            ctx.font = "bold 55px 'Georgia', serif";
+            ctx.fillText("CERTYFIKAT JĘZYKOWY", canvas.width / 2, 140);
             
-            ctx.fillStyle = "#1e3a8a";
-            ctx.font = "bold 40px Arial";
-            ctx.fillText("CERTYFIKAT JĘZYKOWY", canvas.width / 2, 100);
+            ctx.fillStyle = "#C8102E";
+            ctx.font = "bold 28px 'Arial', sans-serif";
+            ctx.fillText("OFICJALNY DOKUMENT MOBTEL EDUCATION", canvas.width / 2, 190);
             
-            ctx.fillStyle = "#3b82f6";
-            ctx.font = "bold 24px Arial";
-            ctx.fillText("Gwarantowany przez firmę MOBTEL", canvas.width / 2, 140);
-            
+            // Treść
             ctx.fillStyle = "#374151";
-            ctx.font = "20px Arial";
-            ctx.fillText("Zaświadcza się, że", canvas.width / 2, 220);
+            ctx.font = "italic 24px 'Arial', sans-serif";
+            ctx.fillText("Niniejszym zaświadcza się, że", canvas.width / 2, 280);
             
+            // Imię i nazwisko
             ctx.fillStyle = "#111827";
-            ctx.font = "italic bold 36px Times New Roman";
-            ctx.fillText(name, canvas.width / 2, 280);
+            ctx.font = "bold 50px 'Times New Roman', serif";
+            ctx.fillText(name, canvas.width / 2, 350);
             
+            // Poziom
             ctx.fillStyle = "#374151";
-            ctx.font = "20px Arial";
-            ctx.fillText("ukończył(a) test kompetencji języka angielskiego z wynikiem:", canvas.width / 2, 340);
+            ctx.font = "italic 24px 'Arial', sans-serif";
+            ctx.fillText("ukończył(a) test kompetencji języka angielskiego uzyskując poziom:", canvas.width / 2, 420);
             
-            ctx.fillStyle = "#10b981";
-            ctx.font = "bold 32px Arial";
-            ctx.fillText(level, canvas.width / 2, 400);
+            ctx.fillStyle = "#C8102E";
+            ctx.font = "bold 45px 'Arial', sans-serif";
+            ctx.fillText(level, canvas.width / 2, 490);
             
+            // Wynik punktowy
+            ctx.fillStyle = "#4B5563";
+            ctx.font = "20px 'Arial', sans-serif";
+            ctx.fillText(`Wynik testu: ${score} / 10 pkt`, canvas.width / 2, 530);
+
+            // Stopka (Data i Podpis)
+            ctx.textAlign = "left";
             ctx.fillStyle = "#6b7280";
-            ctx.font = "16px Arial";
-            ctx.fillText(`Data: ${date}`, 200, 500);
-            ctx.fillText("Podpis: Mobtel Education", 600, 500);
+            ctx.font = "18px 'Arial', sans-serif";
+            ctx.fillText(`Data wydania: ${date}`, 100, 600);
             
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#111827";
+            ctx.font = "italic 24px 'Georgia', serif";
+            ctx.fillText("Zarząd Mobtel", canvas.width - 100, 580);
+            
+            // Linia na podpis
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 250, 590);
+            ctx.lineTo(canvas.width - 100, 590);
+            ctx.strokeStyle = "#111827";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Pobieranie
             const link = document.createElement('a');
-            link.download = `Certyfikat_Mobtel_${name.replace(/\s+/g, '_')}.png`;
+            link.download = `Certyfikat_Angielski_Mobtel_${name.replace(/\s+/g, '_')}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
     </script>
 </body>
 </html>
-
-
